@@ -41,3 +41,4 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Git и желтые окружности"))
         self.draw_btn.setText(_translate("MainWindow", "Жмяк"))
+        #so

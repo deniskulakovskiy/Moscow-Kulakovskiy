@@ -41,3 +41,4 @@ if __name__ == '__main__':
     window = CirclesMainWindow()
     window.show()
     sys.exit(app.exec())
+#so
