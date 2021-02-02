@@ -1,43 +1,43 @@
-# -*- coding: utf-8 -*-
-
- # Form implementation generated from reading ui file 'UI.ui'
- #
- # Created by: PyQt5 UI code generator 5.13.1
- #
- # WARNING! All changes made in this file will be lost!
-
-
-from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import random
+from UI import Ui_MainWindow
+from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtGui import QPainter, QColor, QPen
+from PyQt5.QtCore import Qt
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.draw_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.draw_btn.setObjectName("draw_btn")
-        self.horizontalLayout.addWidget(self.draw_btn)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem1)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+class CirclesMainWindow(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.circles = []
+        self.draw_btn.clicked.connect(self.add_circle)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def add_circle(self):
+        diameter = random.randint(1, min([self.width(), self.height()]))
+        x = random.randint(0, self.width() - diameter - 1)
+        y = random.randint(0, self.height() - diameter - 1)
+        color = [random.randint(0, 255) for _ in range(3)]
+        self.circles += [(color, (x, y, diameter, diameter))]
+        self.update()
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Git и желтые окружности"))
-        self.draw_btn.setText(_translate("MainWindow", "Жмяк"))
+    def draw_circles(self, qp):
+        qp.setBrush(QColor(0, 0, 0, 0))
+        for color, data in self.circles:
+            pen = QPen(QColor(*color), 5)
+            qp.setPen(pen)
+            qp.drawEllipse(*data)
+
+    def paintEvent(self, *args, **kwargs):
+        qp = QPainter()
+        qp.begin(self)
+        self.draw_circles(qp)
+        qp.end()
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = CirclesMainWindow()
+    window.show()
+    sys.exit(app.exec())
